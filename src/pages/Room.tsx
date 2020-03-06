@@ -1,49 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Socket from '../socket';
+// @ts-nocheck
+import React, { Component } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { getSocket, sendMsg } from '../socket';
+
+import ChatHistory from '../components/ChatHistory';
+import ChatInput from '../components/ChatInput';
+import { render } from '@testing-library/react';
 
 interface IState {
-  socket: null | Socket;
-  textarea: string;
+  chatHistory: Array<any>;
 }
 
-function Room() {
-  let { id } = useParams();
+interface Props extends RouteComponentProps {}
 
-  const [state, setState] = useState<IState>({
-    socket: null,
-    textarea: ''
-  });
+class Room extends Component<Props> {
+  state = {
+    chatHistory: []
+  };
 
-  function onMessage(event: MessageEvent, socket: Socket) {
+  onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
-      setState({ socket, textarea: msg });
+      this.setState({
+        ...this.state,
+        chatHistory: [...this.state.chatHistory, msg]
+      });
     });
+  };
+
+  // useEffect(() => {
+  //   getSocket(id, onMessage);
+  // }, []);
+
+  componentDidMount() {
+    console.log(this.props.match.params.id);
+    getSocket('hello', this.onMessage);
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const { value } = e.target;
+  send(event: any) {
+    if (event.keyCode === 13) {
+      const { value } = event.target;
+      sendMsg(value);
 
-    setState({ ...state, textarea: value });
-    state.socket?.sendMsg(value);
+      event.target.value = '';
+    }
   }
 
-  useEffect(() => {
-    setState({ ...state, socket: new Socket(id || '', onMessage) });
-  }, []);
-
-  return (
-    <div>
-      <h1>Room: {id}</h1>
-      <textarea
-        rows={50}
-        cols={300}
-        onChange={handleChange}
-        value={state.textarea}
-      ></textarea>
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <h1>Room: {this.props.match.params.id}</h1>
+        <ChatHistory chatHistory={this.state.chatHistory} />
+        <ChatInput send={this.send} />
+      </div>
+    );
+  }
 }
 
-export default Room;
+export default withRouter(Room);

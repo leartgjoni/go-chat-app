@@ -1,33 +1,30 @@
-class Socket {
-  private ws: WebSocket;
+let socket: any;
 
-  constructor(
-    room: string,
-    onMessage: (e: MessageEvent, socket: Socket) => void
-  ) {
-    this.ws = new WebSocket(`ws://localhost:8080/ws?room=${room}`);
+export const getSocket = (room: any, onMessage: any) => {
+  if (!socket) {
+    socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);
 
-    this.ws.onopen = () => {
+    socket.onopen = () => {
       console.log('Successfully Connected');
     };
 
-    this.ws.onmessage = event => {
-      onMessage(event, this);
+    socket.onmessage = (event: any) => {
+      onMessage(event);
     };
 
-    this.ws.onclose = event => {
+    socket.onclose = (event: any) => {
       console.log('Socket Closed Connection: ', event);
     };
 
-    this.ws.onerror = error => {
+    socket.onerror = (error: any) => {
       console.log('Socket Error: ', error);
     };
   }
 
-  sendMsg(msg: string) {
-    console.log('sending msg: ', msg);
-    this.ws.send(msg);
-  }
-}
+  return socket;
+};
 
-export default Socket;
+export const sendMsg = (msg: string) => {
+  if (!socket) throw Error('socket not here');
+  socket.send(msg);
+};
