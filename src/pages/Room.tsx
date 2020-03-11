@@ -20,6 +20,10 @@ class Room extends Component<Props> {
   onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
+      if (JSON.parse(msg).type === 'user-update') {
+        console.log('USER UPDATE', JSON.parse(msg));
+        return;
+      }
       console.log('message', JSON.parse(msg));
       this.setState({
         ...this.state,
