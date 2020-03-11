@@ -1,8 +1,10 @@
 let socket: any;
 
-export const getSocket = (room: any, onMessage: any) => {
+export const getSocket = (options: any, onMessage: any) => {
   if (!socket) {
-    socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);
+    socket = new WebSocket(
+      `ws://localhost:8080/ws?room=${options.room}&name=${options.user.name}&id=${options.user.id}`
+    );
 
     socket.onopen = () => {
       console.log('Successfully Connected');

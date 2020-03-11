@@ -5,7 +5,7 @@ import './ChatHistory.css';
 class ChatHistory extends Component<{ chatHistory: Array<any> }> {
   render() {
     const messages = this.props.chatHistory.map(msg => (
-      <Message key={msg} message={msg} />
+      <Message key={msg.data} message={msg} />
     ));
 
     return (

@@ -5,7 +5,6 @@ import { getSocket, sendMsg } from '../socket';
 
 import ChatHistory from '../components/ChatHistory';
 import ChatInput from '../components/ChatInput';
-import { render } from '@testing-library/react';
 
 interface IState {
   chatHistory: Array<any>;
@@ -21,9 +20,10 @@ class Room extends Component<Props> {
   onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
+      console.log('message', JSON.parse(msg));
       this.setState({
         ...this.state,
-        chatHistory: [...this.state.chatHistory, msg]
+        chatHistory: [...this.state.chatHistory, JSON.parse(msg)]
       });
     });
   };
@@ -34,13 +34,30 @@ class Room extends Component<Props> {
 
   componentDidMount() {
     console.log(this.props.match.params.id);
-    getSocket('hello', this.onMessage);
+    const searchQuery = new URLSearchParams(this.props.location.search);
+    console.log(searchQuery.get('name'), searchQuery.get('id'));
+    getSocket(
+      {
+        room: this.props.match.params.id,
+        user: { name: searchQuery.get('name'), id: searchQuery.get('id') }
+      },
+      this.onMessage
+    );
   }
 
   send(event: any) {
     if (event.keyCode === 13) {
+      const searchQuery = new URLSearchParams(this.props.location.search);
+
       const { value } = event.target;
       sendMsg(value);
+      this.setState({
+        ...this.state,
+        chatHistory: [
+          ...this.state.chatHistory,
+          { name: searchQuery.get('name'), data: value }
+        ]
+      });
 
       event.target.value = '';
     }
@@ -51,7 +68,7 @@ class Room extends Component<Props> {
       <div>
         <h1>Room: {this.props.match.params.id}</h1>
         <ChatHistory chatHistory={this.state.chatHistory} />
-        <ChatInput send={this.send} />
+        <ChatInput send={this.send.bind(this)} />
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useHistory } from 'react-router-dom';
 
 function Home() {
@@ -55,7 +56,15 @@ function Home() {
               })
             }
           ></input>
-          <button onClick={() => history.push(`/room/${state.form.room}`)}>
+          <button
+            onClick={() =>
+              history.push(
+                `/room/${state.form.room}?name=${
+                  state.form.name
+                }&id=${uuidv4()}`
+              )
+            }
+          >
             GO
           </button>
         </section>
