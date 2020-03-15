@@ -14,25 +14,35 @@ interface Props extends RouteComponentProps {}
 
 class Room extends Component<Props> {
   state = {
+    users: [],
     chatHistory: []
   };
 
   onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
-      if (JSON.parse(msg).type === 'user:list') {
-        console.log('user:list', JSON.parse(msg));
-        window.users = JSON.parse(JSON.parse(msg).data).reduce((acc, user) => {
-          acc[user.id] = user;
+      const message = JSON.parse(msg);
+
+      if (message.type === 'user:list') {
+        console.log('user:list', message);
+        const { data: rawData } = message;
+        const data = JSON.parse(rawData);
+
+        window.users = Object.keys(data).reduce((acc, key) => {
+          acc[key] = JSON.parse(data[key]);
           return acc;
         }, {});
         console.log('from window', window.users);
+        this.setState({
+          ...this.state,
+          users: Object.values(window.users).map(user => user.name)
+        });
         return;
       }
-      console.log('message', JSON.parse(msg));
+      console.log('message', message);
       this.setState({
         ...this.state,
-        chatHistory: [...this.state.chatHistory, JSON.parse(msg)]
+        chatHistory: [...this.state.chatHistory, message]
       });
     });
   };
@@ -76,6 +86,11 @@ class Room extends Component<Props> {
     return (
       <div>
         <h1>Room: {this.props.match.params.id}</h1>
+        <div>
+          {this.state.users.map(user => (
+            <p key={user}>{user}</p>
+          ))}
+        </div>
         <ChatHistory chatHistory={this.state.chatHistory} />
         <ChatInput send={this.send.bind(this)} />
       </div>

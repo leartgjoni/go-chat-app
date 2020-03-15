@@ -9,7 +9,12 @@ class Message extends Component<{ message: { data: string; userId: string } }> {
 
     return (
       <div className="Message">
-        <b>{window.users[message.userId].name}</b>: {this.props.message.data}
+        <b>
+          {window.users[message.userId]
+            ? window.users[message.userId].name
+            : 'left-user'}
+        </b>
+        : {this.props.message.data}
       </div>
     );
   }
