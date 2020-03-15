@@ -3,7 +3,7 @@ let socket: any;
 export const getSocket = (options: any, onMessage: any) => {
   if (!socket) {
     socket = new WebSocket(
-      `ws://localhost:8080/ws?room=${options.room}&name=${options.user.name}&id=${options.user.id}`
+      `ws://${process.env.REACT_APP_API_URL}/ws?room=${options.room}&name=${options.user.name}&id=${options.user.id}`
     );
 
     socket.onopen = () => {
