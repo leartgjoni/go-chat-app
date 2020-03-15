@@ -20,8 +20,13 @@ class Room extends Component<Props> {
   onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
-      if (JSON.parse(msg).type === 'user-update') {
-        console.log('USER UPDATE', JSON.parse(msg));
+      if (JSON.parse(msg).type === 'user:list') {
+        console.log('user:list', JSON.parse(msg));
+        window.users = JSON.parse(JSON.parse(msg).data).reduce((acc, user) => {
+          acc[user.id] = user;
+          return acc;
+        }, {});
+        console.log('from window', window.users);
         return;
       }
       console.log('message', JSON.parse(msg));
@@ -59,7 +64,7 @@ class Room extends Component<Props> {
         ...this.state,
         chatHistory: [
           ...this.state.chatHistory,
-          { name: searchQuery.get('name'), data: value }
+          { userId: searchQuery.get('id'), data: value }
         ]
       });
 
