@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { getSocket, sendMsg } from '../socket';
-
 import ChatHistory from '../components/ChatHistory';
 import ChatInput from '../components/ChatInput';
 
@@ -12,13 +12,14 @@ interface IState {
 
 interface Props extends RouteComponentProps {}
 
-class Room extends Component<Props> {
-  state = {
-    users: [],
-    chatHistory: []
-  };
+// class Room extends Component<Props> {
+//   state = {
+//     users: [],
+//     chatHistory: []
+//   };
 
-  onMessage = (event: MessageEvent) => {
+const Room = ({users,chatHistory}) => {
+  const onMessage = (event: MessageEvent) => {
     var messages = event.data.split('-d-');
     messages.forEach((msg: string) => {
       const message = JSON.parse(msg);
@@ -47,24 +48,8 @@ class Room extends Component<Props> {
     });
   };
 
-  // useEffect(() => {
-  //   getSocket(id, onMessage);
-  // }, []);
 
-  componentDidMount() {
-    console.log(this.props.match.params.id);
-    const searchQuery = new URLSearchParams(this.props.location.search);
-    console.log(searchQuery.get('name'), searchQuery.get('id'));
-    getSocket(
-      {
-        room: this.props.match.params.id,
-        user: { name: searchQuery.get('name'), id: searchQuery.get('id') }
-      },
-      this.onMessage
-    );
-  }
-
-  send(event: any) {
+  const send = (event: any) => {
     if (event.keyCode === 13) {
       const searchQuery = new URLSearchParams(this.props.location.search);
 
@@ -81,10 +66,8 @@ class Room extends Component<Props> {
       event.target.value = '';
     }
   }
-
-  render() {
-    return (
-      <div>
+  return(
+<div>
         <h1>Room: {this.props.match.params.id}</h1>
         <div>
           {this.state.users.map(user => (
@@ -94,8 +77,33 @@ class Room extends Component<Props> {
         <ChatHistory chatHistory={this.state.chatHistory} />
         <ChatInput send={this.send.bind(this)} />
       </div>
-    );
-  }
+  );
 }
 
-export default withRouter(Room);
+
+  // useEffect(() => {
+  //   getSocket(id, onMessage);
+  // }, []);
+
+  // componentDidMount() {
+  //   console.log(this.props.match.params.id);
+  //   const searchQuery = new URLSearchParams(this.props.location.search);
+  //   console.log(searchQuery.get('name'), searchQuery.get('id'));
+  //   getSocket(
+  //     {
+  //       room: this.props.match.params.id,
+  //       user: { name: searchQuery.get('name'), id: searchQuery.get('id') }
+  //     },
+  //     this.onMessage
+  //   );
+  // }
+
+
+
+
+const mapStateToProps = state => ({
+  users: state.chatReducer.users,
+  chatHistory: state.chatReducer.chatHistory
+})
+
+export default connect(mapStateToProps,null)( withRouter(Room));

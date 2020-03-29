@@ -159,7 +159,7 @@ function Home() {
                 }&id=${uuidv4()}`
               )
             }
-            disabled={!state.form.name.length && !state.form.room.length}
+            disabled={!state.form.name.length || !state.form.room.length}
           >
             GO
           </GoButton>
