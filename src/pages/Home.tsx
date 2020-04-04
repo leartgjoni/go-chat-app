@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { useHistory } from 'react-router-dom';
+import Header from '../components/Header'
 
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   max-width: 800px;
-  margin: 200px auto;
+  margin: 100px auto;
   grid-gap: 80px;
 `;
 
@@ -20,43 +21,6 @@ const Title = styled.p`
 const ButtonRow = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr;
-`;
-
-const CreateButton = styled.button`
-  border: 1px solid #d5d5d5;
-  width: 130px;
-  height: 100px;
-  margin-left: 50px;
-  margin-top: 20px;
-  border-radius: 10px;
-  font-family: 'Cookie', cursive;
-  font-size: 14px;
-
-  :hover {
-    background-color: #20c997;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-`;
-
-const JoinButton = styled.button`
-  border: 1px solid #d5d5d5;
-  width: 130px;
-  height: 100px;
-  margin-left: 200px;
-  border-radius: 10px;
-  font-family: 'Cookie', cursive;
-  font-size: 14px;
-
-  :hover {
-    background-color: #20c997;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-  }
 `;
 
 const RoomSection = styled.section`
@@ -78,7 +42,7 @@ padding: 5px;
 float: right;
 
 :hover {
-  background-color: #20c997;
+  background-color: #39CCCC;
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -105,7 +69,11 @@ function Home() {
   let history = useHistory();
 
   return (
+    <div>
+       <Header />
+
     <Wrapper>
+     
       <div>
       <Title>Keep chatting, but don't forget to join a room first! </Title>
       <ButtonRow>
@@ -171,6 +139,7 @@ function Home() {
         <Image src="https://cdn.pixabay.com/photo/2016/02/07/14/45/smartphone-1184883_1280.png" />
       </div>
     </Wrapper>
+    </div>
   );
 }
 

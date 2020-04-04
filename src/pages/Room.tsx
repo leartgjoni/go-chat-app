@@ -1,10 +1,56 @@
 // @ts-nocheck
 import React, { Component } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import styled from 'styled-components';
 import { getSocket, sendMsg } from '../socket';
 
 import ChatHistory from '../components/ChatHistory';
 import ChatInput from '../components/ChatInput';
+
+const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 300px auto;
+`;
+
+const InfoDiv = styled.div`
+ //background-color: #39CCCC;
+ background-image: linear-gradient( #39CCCC, #8fffff);
+  color: white;
+  padding: 20px;
+  text-align: center;
+`;
+
+const Image = styled.img`
+  height: 120px;
+  width: 120px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 9px solid #fff;
+  margin-top: 20px;
+`;
+
+const RoomName = styled.p`
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 50px;
+`;
+
+const UserName = styled.p`
+font-style: italic;
+font-size: 18px;
+`;
+
+const MessageDiv = styled.div`
+  background-color: #f7f7f7;
+`;
+
+const ChatInputWrapper = styled.div
+`
+position: -webkit-sticky; /* Safari */
+position: sticky;
+bottom: 0;
+margin-top: 100px;
+`;
 
 interface IState {
   chatHistory: Array<any>;
@@ -65,7 +111,7 @@ class Room extends Component<Props> {
   }
 
   send(event: any) {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && event.target.value) {
       const searchQuery = new URLSearchParams(this.props.location.search);
 
       const { value } = event.target;
@@ -84,7 +130,32 @@ class Room extends Component<Props> {
 
   render() {
     return (
-      <div>
+      <Wrapper>
+        <InfoDiv>
+            <Image src="https://cdn.pixabay.com/photo/2018/01/20/10/14/blogging-3094201_1280.jpg"></Image>
+    
+        <RoomName><i class="fa fa-commenting-o" aria-hidden="true"> {this.props.match.params.id}</i></RoomName>
+
+        <div>
+          {this.state.users.map(user => (
+            <UserName key={user}><i class="fa fa-user-o" aria-hidden="true"/> {user}</UserName>
+          ))}
+        </div>
+        </InfoDiv>
+        <MessageDiv>
+          <ChatHistory chatHistory={this.state.chatHistory} />
+          <ChatInputWrapper><ChatInput send={this.send.bind(this)} /></ChatInputWrapper>
+        </MessageDiv>
+      </Wrapper>
+    );
+  }
+}
+
+
+
+export default withRouter(Room);
+
+{/* <div>
         <h1>Room: {this.props.match.params.id}</h1>
         <div>
           {this.state.users.map(user => (
@@ -93,9 +164,4 @@ class Room extends Component<Props> {
         </div>
         <ChatHistory chatHistory={this.state.chatHistory} />
         <ChatInput send={this.send.bind(this)} />
-      </div>
-    );
-  }
-}
-
-export default withRouter(Room);
+      </div> */}
