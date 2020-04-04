@@ -1,4 +1,4 @@
-import { SEND_MESSAGE, GET_SOCKET, SystemState } from '../types/types';
+import { SEND_MESSAGE, GET_SOCKET, SystemState , SET_USERS, SET_CHAT_HISTORY} from '../types/types';
 
 const initialState: SystemState = {
    users: [],
@@ -19,6 +19,11 @@ export function chatReducer(state = initialState, action: {type: any, payload: a
                 //counter: action.payload
             }
         }
+        case SET_USERS:
+            return {
+                ...state,
+                users: action.payload
+            }
         default:
             return state
     }

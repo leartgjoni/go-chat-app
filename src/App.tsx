@@ -7,7 +7,7 @@ import store from './store/store';
 
 function App() {
   return (
-    <Provider store={store}>
+    <Provider store={store()}>
     <Router>
       <Switch>
         <Route exact path="/">
