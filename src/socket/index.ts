@@ -1,27 +1,25 @@
-let socket: any;
+import { Chat } from '../types';
 
-export const getSocket = (options: any, onMessage: any) => {
-  if (!socket) {
-    socket = new WebSocket(
-      `ws://${process.env.REACT_APP_API_URL}/ws?room=${options.room}&name=${options.user.name}&id=${options.user.id}`
-    );
+let socket: WebSocket;
 
-    socket.onopen = () => {
-      console.log('Successfully Connected');
-    };
+export const getSocket = (chat: Chat): WebSocket => {
+  if (socket) return socket;
 
-    socket.onmessage = (event: any) => {
-      onMessage(event);
-    };
+  socket = new WebSocket(
+    `ws://${process.env.REACT_APP_API_URL}/ws?room=${chat.room}&name=${chat.user.name}&id=${chat.user.id}`
+  );
 
-    socket.onclose = (event: any) => {
-      console.log('Socket Closed Connection: ', event);
-    };
+  socket.onopen = () => {
+    console.log('Successfully Connected');
+  };
 
-    socket.onerror = (error: any) => {
-      console.log('Socket Error: ', error);
-    };
-  }
+  socket.onclose = (event: any) => {
+    console.log('Socket Closed Connection: ', event);
+  };
+
+  socket.onerror = (error: any) => {
+    console.log('Socket Error: ', error);
+  };
 
   return socket;
 };
