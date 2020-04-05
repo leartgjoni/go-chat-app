@@ -1,33 +1,30 @@
-class Socket {
-  private ws: WebSocket;
+import { Chat } from '../types';
 
-  constructor(
-    room: string,
-    onMessage: (e: MessageEvent, socket: Socket) => void
-  ) {
-    this.ws = new WebSocket(`ws://localhost:8080/ws?room=${room}`);
+let socket: WebSocket;
 
-    this.ws.onopen = () => {
-      console.log('Successfully Connected');
-    };
+export const getSocket = (chat: Chat): WebSocket => {
+  if (socket) return socket;
 
-    this.ws.onmessage = event => {
-      onMessage(event, this);
-    };
+  socket = new WebSocket(
+    `ws://${process.env.REACT_APP_API_URL}/ws?room=${chat.room}&name=${chat.user.name}&id=${chat.user.id}`
+  );
 
-    this.ws.onclose = event => {
-      console.log('Socket Closed Connection: ', event);
-    };
+  socket.onopen = () => {
+    console.log('Successfully Connected');
+  };
 
-    this.ws.onerror = error => {
-      console.log('Socket Error: ', error);
-    };
-  }
+  socket.onclose = (event: any) => {
+    console.log('Socket Closed Connection: ', event);
+  };
 
-  sendMsg(msg: string) {
-    console.log('sending msg: ', msg);
-    this.ws.send(msg);
-  }
-}
+  socket.onerror = (error: any) => {
+    console.log('Socket Error: ', error);
+  };
 
-export default Socket;
+  return socket;
+};
+
+export const sendMsg = (msg: string) => {
+  if (!socket) throw Error('socket not here');
+  socket.send(msg);
+};
