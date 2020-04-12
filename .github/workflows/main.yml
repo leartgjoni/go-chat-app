@@ -40,3 +40,4 @@ jobs:
           repo: ${{ secrets.ECR_REPO }}
           region: ${{ secrets.AWS_REGION }}
           tags: latest,${{ github.sha }}
+          extra_build_args: --build-arg API_URL=${{secrets.API_URL}}
