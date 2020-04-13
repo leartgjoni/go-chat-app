@@ -7,7 +7,7 @@ import HomeForm from '../../components/HomeForm';
 const Home = ({ setAppState }: { setAppState: Function }) => {
   const [form, setForm] = useState({
     name: '',
-    room: ''
+    room: '',
   });
 
   const submit = () =>
@@ -15,10 +15,10 @@ const Home = ({ setAppState }: { setAppState: Function }) => {
       chat: {
         user: {
           name: form.name,
-          id: uuidv4()
+          id: uuidv4(),
         },
-        room: form.room
-      }
+        room: form.room,
+      },
     });
 
   return (
@@ -26,7 +26,7 @@ const Home = ({ setAppState }: { setAppState: Function }) => {
       <Header />
       <Wrapper>
         <div>
-          <Title>Keep chatting, but don't forget to join a room first! </Title>
+          <Title>Keep chatting, but don't forget to join a room first!</Title>
           <ButtonRow>
             <RoomSection>
               <HomeForm submit={submit} form={form} setForm={setForm} />
