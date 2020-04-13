@@ -26,7 +26,7 @@ const Home = ({ setAppState }: { setAppState: Function }) => {
       <Header />
       <Wrapper>
         <div>
-          <Title>Keep chatting, but don't forget to join a room first!</Title>
+          <Title>Keep chatting, but don't forget to join a room first! </Title>
           <ButtonRow>
             <RoomSection>
               <HomeForm submit={submit} form={form} setForm={setForm} />
