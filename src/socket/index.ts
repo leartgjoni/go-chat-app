@@ -15,10 +15,14 @@ export const getSocket = (chat: Chat): WebSocket => {
 
   socket.onclose = (event: any) => {
     console.log('Socket Closed Connection: ', event);
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
   };
 
   socket.onerror = (error: any) => {
     console.log('Socket Error: ', error);
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
   };
 
   return socket;
