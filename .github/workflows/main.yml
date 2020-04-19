@@ -41,7 +41,21 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           tags: latest,${{ github.sha }}
           extra_build_args: --build-arg API_URL=${{secrets.API_URL}}
-      
-      - name: update k8s
-        run: aws help
 
+  deploy:
+    name: Update k8s image
+    runs-on: ubuntu-latest
+    needs: release
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Config kubectl
+        run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name go-chat-cluster
+
+      - name: Set image
+        run: kubectl set image statefulset/app app=${{ secrets.AWS_ACCOUNT_ID }}.dkr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO }}:${{ github.sha }}
