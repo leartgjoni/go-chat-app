@@ -24,7 +24,8 @@ const Room = ({ chat }: { chat: Chat }) => {
 
         const users = Object.keys(data).reduce(
           (acc: Record<string, { name: string; id: string }>, key) => {
-            acc[key] = { ...JSON.parse(data[key]), id: key };
+            const value = typeof data[key] === 'string' ? JSON.parse(data[key]) : data[key];
+            acc[key] = { ...value, id: key };
             return acc;
           },
           {}
